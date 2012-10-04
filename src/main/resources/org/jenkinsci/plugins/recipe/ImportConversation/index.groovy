@@ -14,8 +14,8 @@ l.layout {
 
         h3 _("Import Parameters")
         f.form(action:"cook",method:"POST") {
-            my.recipe.parameters.each { p ->
-                include p,"config"
+            my.recipe.ingredients.each { i ->
+                include i,"config"
             }
             f.block {
                 f.submit(value:_("Import"))

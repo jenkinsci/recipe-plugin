@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.recipe;
 
 import hudson.Extension;
 import hudson.Util;
+import hudson.init.InitMilestone;
+import hudson.init.Initializer;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.util.VariableResolver;
@@ -125,7 +127,10 @@ public class Recipe extends AbstractDescribableImpl<Recipe> {
 
     public static XStream2 XSTREAM = new XStream2();
 
-    static {
+    @Initializer(after=InitMilestone.PLUGINS_PREPARED)
+    public static void init() {
         XSTREAM.alias("recipe",Recipe.class);
+        for (IngredientDescriptor d : IngredientDescriptor.all())
+            XSTREAM.alias(d.getPersistenceElementName(),d.clazz);
     }
 }

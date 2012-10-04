@@ -2,7 +2,6 @@ package org.jenkinsci.plugins.recipe.ingredients;
 
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.Recipe;
-import org.jenkinsci.plugins.recipe.Recipe.ImportOptions;
 
 import java.io.IOException;
 
@@ -23,10 +22,6 @@ public class Parameter extends Ingredient {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    @Override
-    public void apply(ImportOptions opts) {
     }
 
     @Override
