@@ -4,9 +4,11 @@ import hudson.model.Job;
 import hudson.util.XStream2;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
+import net.sf.json.JSONObject;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.jenkinsci.plugins.recipe.ImportOptions;
 import org.jenkinsci.plugins.recipe.Ingredient;
+import org.jenkinsci.plugins.recipe.Recipe;
+import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,15 +34,17 @@ public class JobIngredient extends Ingredient {
     }
 
     @Override
-    public JobIngredient apply(ImportOptions opts) {
-        return new JobIngredient(opts.apply(name),opts.apply(definition));
+    public void apply(StaplerRequest req, JSONObject opt) {
+        super.apply(req, opt);
     }
 
     @Override
-    public void cook() throws IOException {
+    public void cook(Recipe recipe) throws IOException {
+        XStreamDOM actual = recipe.createImportOptions().apply(definition);
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XStream2 xs = new XStream2();
-        xs.toXML(definition,baos);
+        xs.toXML(actual,baos);
         Jenkins.getInstance().createProjectFromXML(name,new ByteArrayInputStream(baos.toByteArray()));
     }
 

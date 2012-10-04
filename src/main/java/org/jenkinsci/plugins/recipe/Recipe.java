@@ -4,14 +4,21 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
+import hudson.util.VariableResolver;
 import hudson.util.XStream2;
+import jenkins.util.xstream.XStreamDOM;
+import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.recipe.ingredients.Parameter;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
 
+import javax.servlet.ServletException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -62,11 +69,43 @@ public class Recipe extends AbstractDescribableImpl<Recipe> {
         return Util.filter(ingredients,Parameter.class);
     }
 
-    public List<Ingredient> apply(ImportOptions opts) {
-        List<Ingredient> r = new ArrayList<Ingredient>(ingredients.size());
-        for (Ingredient i : ingredients)
-            r.add(i.apply(opts));
-        return r;
+    public void apply(StaplerRequest req) throws ServletException {
+        JSONObject structure = req.getSubmittedForm();
+        for (int i=0; i<getIngredients().size(); i++) {
+            getIngredients().get(i).apply(req,structure.getJSONObject("ingredient"+i));
+        }
+    }
+
+    public void cook() throws IOException {
+        for (Ingredient i : getIngredients())
+            i.cook(this);
+    }
+
+    public ImportOptions createImportOptions() {
+        return new ImportOptions();
+    }
+
+    public final class ImportOptions implements VariableResolver<String> {
+        private final VariableResolver<String> resolver;
+
+        private ImportOptions() {
+            Map<String, String> variables = new HashMap<String, String>();
+            for (Parameter p : getParameters())
+                variables.put(p.name,p.getValue());
+            this.resolver = new ByMap<String>(variables);
+        }
+
+        public String resolve(String s) {
+            return resolver.resolve(s);
+        }
+
+        public XStreamDOM apply(XStreamDOM dom) {
+            return dom.expandMacro(resolver);
+        }
+
+        public String apply(String s) {
+            return Util.replaceMacro(s,resolver);
+        }
     }
 
     /**

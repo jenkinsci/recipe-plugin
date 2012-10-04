@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.recipe;
 
 import hudson.ExtensionPoint;
+import net.sf.json.JSONObject;
+import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.IOException;
 
@@ -10,12 +12,17 @@ import java.io.IOException;
 public abstract class Ingredient implements ExtensionPoint {
     /**
      * Apply the import options to this ingredient
-     * (such as variable expansions, etc.)
+     * (such as parameter values, variable names, etc.)
+     *
+     * This is a destructive operation.
      */
-    public abstract Ingredient apply(ImportOptions opts);
+    public void apply(StaplerRequest req, JSONObject opt) {
+        req.bindJSON(this,opt);
+    }
 
     /**
      * Imports this ingredient into the current Jenkins.
+     * @param recipe
      */
-    public abstract void cook() throws IOException;
+    protected abstract void cook(Recipe recipe) throws IOException;
 }

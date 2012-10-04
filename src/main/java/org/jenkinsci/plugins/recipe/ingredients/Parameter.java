@@ -1,7 +1,8 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
-import org.jenkinsci.plugins.recipe.ImportOptions;
 import org.jenkinsci.plugins.recipe.Ingredient;
+import org.jenkinsci.plugins.recipe.Recipe;
+import org.jenkinsci.plugins.recipe.Recipe.ImportOptions;
 
 import java.io.IOException;
 
@@ -9,18 +10,26 @@ import java.io.IOException;
  * @author Kohsuke Kawaguchi
  */
 public class Parameter extends Ingredient {
-    public String name;
+    public final String name;
+    private String value;
 
     public Parameter(String name) {
         this.name = name;
     }
 
-    @Override
-    public Parameter apply(ImportOptions opts) {
-        return this; // no transformation necessary
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
-    public void cook() throws IOException {
+    public void apply(ImportOptions opts) {
+    }
+
+    @Override
+    public void cook(Recipe recipe) throws IOException {
     }
 }
