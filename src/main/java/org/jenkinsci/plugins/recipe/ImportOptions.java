@@ -8,6 +8,7 @@ import jenkins.util.xstream.XStreamDOM;
 import java.util.Map;
 
 /**
+ * Parameters specified by the importing user to customize {@link Recipe}.
  *
  * @author Kohsuke Kawaguchi
  */

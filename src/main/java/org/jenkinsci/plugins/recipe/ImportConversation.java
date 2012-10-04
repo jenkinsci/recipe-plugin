@@ -6,10 +6,15 @@ import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Conversation-scoped object that guides the user through the importing process.
+ *
+ * Tied to {@link HttpSession}.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class ImportConversation {
