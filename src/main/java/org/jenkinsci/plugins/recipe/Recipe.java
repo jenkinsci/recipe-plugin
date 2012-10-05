@@ -127,7 +127,7 @@ public class Recipe extends AbstractDescribableImpl<Recipe> {
 
     public static XStream2 XSTREAM = new XStream2();
 
-    @Initializer(after=InitMilestone.PLUGINS_PREPARED)
+    @Initializer(after=InitMilestone.PLUGINS_STARTED)
     public static void init() {
         XSTREAM.alias("recipe",Recipe.class);
         for (IngredientDescriptor d : IngredientDescriptor.all())

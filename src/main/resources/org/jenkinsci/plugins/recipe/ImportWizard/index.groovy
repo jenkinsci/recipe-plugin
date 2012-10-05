@@ -9,9 +9,9 @@ l.layout {
     l.main_panel {
         h1 title
 
-        f.form(action:"cook",method:"POST") {
+        f.form(action:"retrieve",method:"POST") {
             f.entry(title:_("Recipe URL")) {
-                f.textbox()
+                f.textbox(name:"url")
             }
             f.block {
                 f.submit(value:_("Retrieve Recipe"))

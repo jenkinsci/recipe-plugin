@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
+import hudson.Extension;
 import org.jenkinsci.plugins.recipe.Ingredient;
+import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
 
 import java.io.IOException;
@@ -26,5 +28,13 @@ public class Parameter extends Ingredient {
 
     @Override
     public void cook(Recipe recipe) throws IOException {
+    }
+
+    @Extension
+    public static class DescriptorImpl extends IngredientDescriptor {
+        @Override
+        public String getDisplayName() {
+            return "Parameter";
+        }
     }
 }

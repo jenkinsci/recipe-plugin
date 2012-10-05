@@ -12,7 +12,7 @@ l.layout {
         h3 _("Description")
         p my.recipe.description
 
-        h3 _("Import Parameters")
+        h3 _("Contents to be imported")
         f.form(action:"cook",method:"POST") {
             my.recipe.ingredients.each { i ->
                 include i,"config"

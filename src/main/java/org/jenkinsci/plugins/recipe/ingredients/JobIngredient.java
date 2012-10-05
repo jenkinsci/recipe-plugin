@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
+import hudson.Extension;
 import hudson.model.Job;
 import hudson.util.XStream2;
 import jenkins.model.Jenkins;
@@ -7,6 +8,7 @@ import jenkins.util.xstream.XStreamDOM;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jenkinsci.plugins.recipe.Ingredient;
+import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -51,5 +53,13 @@ public class JobIngredient extends Ingredient {
     public static JobIngredient fromJob(Job j) {
         XStreamDOM dom = XStreamDOM.from(j.getConfigFile().getXStream(),j);
         return new JobIngredient(j.getName(),dom);
+    }
+
+    @Extension
+    public static class DescriptorImpl extends IngredientDescriptor {
+        @Override
+        public String getDisplayName() {
+            return "Job";
+        }
     }
 }

@@ -30,12 +30,15 @@ public class ImportWizard extends ManagementLink {
         return "Import Recipe";
     }
 
-    public HttpResponse doReadRecipe(@QueryParameter URL url) throws IOException {
+    public HttpResponse doRetrieve(@QueryParameter URL url) throws IOException {
         Recipe r = Recipe.load(url);
         ImportConversation ic = new ImportConversation(r);
         return HttpResponses.redirectTo("conversation");
     }
 
+    /**
+     * Binds {@link ImportConversation} to /conversation/
+     */
     public ImportConversation getConversation() {
         return ImportConversation.getCurrent();
     }
