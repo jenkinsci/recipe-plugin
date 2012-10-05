@@ -1,10 +1,11 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
+import com.thoughtworks.xstream.io.xml.XppDriver;
 import hudson.Extension;
 import hudson.model.Job;
-import hudson.util.XStream2;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
+import jenkins.util.xstream.XStreamDOM.ConverterImpl;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jenkinsci.plugins.recipe.Ingredient;
@@ -27,6 +28,10 @@ public class JobIngredient extends Ingredient {
         this.definition = definition;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
@@ -42,11 +47,13 @@ public class JobIngredient extends Ingredient {
 
     @Override
     public void cook(Recipe recipe) throws IOException {
+        // expansion of this is deferred
         XStreamDOM actual = recipe.createImportOptions().apply(definition);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XStream2 xs = new XStream2();
-        xs.toXML(actual,baos);
+        XStreamDOM.ConverterImpl c = new ConverterImpl();
+        c.marshal(actual, new XppDriver().createWriter(baos), null);
+
         Jenkins.getInstance().createProjectFromXML(name,new ByteArrayInputStream(baos.toByteArray()));
     }
 

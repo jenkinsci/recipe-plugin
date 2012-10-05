@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.recipe;
 
 import hudson.ExtensionPoint;
 import hudson.model.AbstractDescribableImpl;
+import hudson.model.Descriptor;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -11,6 +12,11 @@ import java.io.IOException;
  * @author Kohsuke Kawaguchi
  */
 public abstract class Ingredient extends AbstractDescribableImpl<Ingredient> implements ExtensionPoint {
+    @Override
+    public IngredientDescriptor getDescriptor() {
+        return (IngredientDescriptor)super.getDescriptor();
+    }
+
     /**
      * Apply the import options to this ingredient
      * (such as parameter values, variable names, etc.)

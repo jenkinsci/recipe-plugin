@@ -14,8 +14,13 @@ l.layout {
 
         h3 _("Contents to be imported")
         f.form(action:"cook",method:"POST") {
+            int n=0;
             my.recipe.ingredients.each { i ->
-                include i,"config"
+                f.section(name:"ingredient${n++}",title:i.descriptor.displayName) {
+                    context.setVariable("instance",i)
+                    context.setVariable("descriptor",i.descriptor)
+                    include i,"config"
+                }
             }
             f.block {
                 f.submit(value:_("Import"))
