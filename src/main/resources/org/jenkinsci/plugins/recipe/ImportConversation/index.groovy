@@ -19,7 +19,7 @@ l.layout {
                 f.section(name:"ingredient${n++}",title:i.descriptor.displayName) {
                     context.setVariable("instance",i)
                     context.setVariable("descriptor",i.descriptor)
-                    include i,"config"
+                    include i,"import"
                 }
             }
             f.block {
