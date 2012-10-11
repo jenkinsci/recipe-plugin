@@ -37,7 +37,7 @@ public abstract class Ingredient extends AbstractDescribableImpl<Ingredient> imp
      * Imports this ingredient into the current Jenkins.
      * @param recipe
      */
-    protected abstract void cook(Recipe recipe) throws IOException;
+    protected abstract void cook(Recipe recipe) throws IOException, InterruptedException;
 
     protected static InputStream read(XStreamDOM dom) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
