@@ -41,11 +41,6 @@ public class JobIngredient extends Ingredient {
     }
 
     @Override
-    public void apply(StaplerRequest req, JSONObject opt) {
-        super.apply(req, opt);
-    }
-
-    @Override
     public void cook(Recipe recipe) throws IOException {
         // expansion of this is deferred
         XStreamDOM actual = recipe.createImportOptions().apply(definition);
