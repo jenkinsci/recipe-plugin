@@ -1,12 +1,18 @@
 package org.jenkinsci.plugins.recipe;
 
+import com.thoughtworks.xstream.io.xml.XppDriver;
 import hudson.ExtensionPoint;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
+import jenkins.util.xstream.XStreamDOM;
+import jenkins.util.xstream.XStreamDOM.ConverterImpl;
 import net.sf.json.JSONObject;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.kohsuke.stapler.StaplerRequest;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -32,4 +38,11 @@ public abstract class Ingredient extends AbstractDescribableImpl<Ingredient> imp
      * @param recipe
      */
     protected abstract void cook(Recipe recipe) throws IOException;
+
+    protected static InputStream read(XStreamDOM dom) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XStreamDOM.ConverterImpl c = new ConverterImpl();
+        c.marshal(dom, new XppDriver().createWriter(baos), null);
+        return new ByteArrayInputStream(baos.toByteArray());
+    }
 }
