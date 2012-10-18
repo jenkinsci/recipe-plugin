@@ -44,6 +44,9 @@ public class ImportConversation {
         } catch (IOException e) {
             error = e;
             return HttpResponses.redirectToDot();
+        } catch (InterruptedException e) {
+            error = e;
+            return HttpResponses.redirectToDot();
         }
     }
 
