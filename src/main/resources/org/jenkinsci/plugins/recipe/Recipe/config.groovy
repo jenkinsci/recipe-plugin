@@ -13,9 +13,11 @@ f.entry(title:"Version",field:"version") {
 f.entry(title:"Description",field:"description") {
     f.textarea()
 }
-f.block {
-    f.hetero_list(
-        name:"ingredients",hasHeader:true, descriptors: IngredientDescriptor.all(),
-        items:instance?.ingredients, addCaption:_("Add ingredient")
-    )
+f.section(title:_("Ingredients")) {
+    f.block {
+        f.hetero_list(
+            name:"ingredients",hasHeader:true, descriptors: IngredientDescriptor.all(),
+            items:instance?.ingredients, addCaption:_("Add ingredient")
+        )
+    }
 }

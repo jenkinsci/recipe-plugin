@@ -18,6 +18,7 @@ l.layout {
         f.form(action:"export",method:"POST") {
             include(d.clazz,d.configPage)
             f.block {
+                div(style:"margin-top:1em")
                 f.submit(value:_("Export Recipe"))
             }
         }
