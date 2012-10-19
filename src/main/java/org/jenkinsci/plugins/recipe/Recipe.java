@@ -6,12 +6,15 @@ import hudson.init.InitMilestone;
 import hudson.init.Initializer;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
+import hudson.util.FormValidation;
 import hudson.util.VariableResolver;
+import hudson.util.VersionNumber;
 import hudson.util.XStream2;
 import jenkins.util.xstream.XStreamDOM;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.recipe.ingredients.Parameter;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.servlet.ServletException;
@@ -122,6 +125,15 @@ public class Recipe extends AbstractDescribableImpl<Recipe> {
         @Override
         public String getDisplayName() {
             return "";
+        }
+
+        public FormValidation doCheckVersion(@QueryParameter String value) {
+            try {
+                new VersionNumber(value);
+                return FormValidation.ok();
+            } catch (Exception e) {
+                return FormValidation.error(value+" is not a valid version number");
+            }
         }
     }
 

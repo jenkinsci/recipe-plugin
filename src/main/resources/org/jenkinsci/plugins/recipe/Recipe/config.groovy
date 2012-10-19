@@ -8,7 +8,7 @@ f.entry(title:"Title",field:"title") {
     f.textbox()
 }
 f.entry(title:"Version",field:"version") {
-    f.textbox()
+    f.textbox(default:"1.0")
 }
 f.entry(title:"Description",field:"description") {
     f.textarea()

@@ -3,9 +3,11 @@ package org.jenkinsci.plugins.recipe.ingredients;
 import hudson.Extension;
 import hudson.PluginManager;
 import hudson.PluginWrapper;
+import hudson.Util;
 import hudson.model.UpdateCenter;
 import hudson.model.UpdateSite;
 import hudson.util.IOException2;
+import hudson.util.ListBoxModel;
 import hudson.util.VersionNumber;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.recipe.Ingredient;
@@ -24,9 +26,13 @@ import java.util.concurrent.ExecutionException;
 public class PluginIngredient extends Ingredient {
     public final String names;
 
-    @DataBoundConstructor
     public PluginIngredient(String names) {
         this.names = names;
+    }
+
+    @DataBoundConstructor
+    public PluginIngredient(List<String> names) {
+        this.names = Util.join(names, " ");
     }
 
     public List<String> getNameList() {
@@ -76,6 +82,13 @@ public class PluginIngredient extends Ingredient {
         @Override
         public String getDisplayName() {
             return "Plugin";
+        }
+
+        public ListBoxModel doFillNamesItems() {
+            ListBoxModel r = new ListBoxModel();
+            for (PluginWrapper p : Jenkins.getInstance().pluginManager.getPlugins())
+                r.add(p.getShortName());
+            return r;
         }
     }
 }
