@@ -4,6 +4,7 @@ import hudson.Extension;
 import hudson.model.View;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
+import org.jenkinsci.plugins.recipe.ImportReportList;
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
@@ -37,7 +38,7 @@ public class ViewIngredient extends Ingredient {
     }
 
     @Override
-    public void cook(Recipe recipe) throws IOException {
+    public void cook(Recipe recipe, ImportReportList reportList) throws IOException {
         XStreamDOM actual = recipe.createImportOptions().apply(definition);
 
         View v = (View)Jenkins.XSTREAM2.unmarshal(actual.newReader());

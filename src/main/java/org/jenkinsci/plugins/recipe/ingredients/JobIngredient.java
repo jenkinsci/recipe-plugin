@@ -4,16 +4,13 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
-import hudson.model.Item;
-import hudson.model.ItemGroup;
 import hudson.model.Job;
-import hudson.model.TopLevelItem;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
 import jenkins.util.xstream.XStreamDOM.ConverterImpl;
-import net.sf.json.JSONObject;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.jenkinsci.plugins.recipe.ImportReportList;
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
@@ -21,7 +18,6 @@ import org.jenkinsci.plugins.recipe.RecipeWizard;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -60,7 +56,7 @@ public class JobIngredient extends Ingredient {
     }
 
     @Override
-    public void cook(Recipe recipe) throws IOException {
+    public void cook(Recipe recipe, ImportReportList reportList) throws IOException {
         // expansion of this is deferred
         XStreamDOM actual = recipe.createImportOptions().apply(definition);
 

@@ -10,6 +10,7 @@ import hudson.util.IOException2;
 import hudson.util.ListBoxModel;
 import hudson.util.VersionNumber;
 import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.recipe.ImportReportList;
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
@@ -40,7 +41,7 @@ public class PluginIngredient extends Ingredient {
     }
 
     @Override
-    protected void cook(Recipe recipe) throws IOException, InterruptedException {
+    protected void cook(Recipe recipe, ImportReportList reportList) throws IOException, InterruptedException {
         PluginManager pm = Jenkins.getInstance().pluginManager;
         UpdateCenter uc = Jenkins.getInstance().getUpdateCenter();
 

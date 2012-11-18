@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
 import hudson.Extension;
+import org.jenkinsci.plugins.recipe.ImportReportList;
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
@@ -27,7 +28,7 @@ public class Parameter extends Ingredient {
     }
 
     @Override
-    public void cook(Recipe recipe) throws IOException {
+    public void cook(Recipe recipe, ImportReportList reportList) throws IOException {
     }
 
     @Extension

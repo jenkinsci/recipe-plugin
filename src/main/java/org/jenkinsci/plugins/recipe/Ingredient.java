@@ -3,7 +3,6 @@ package org.jenkinsci.plugins.recipe;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 import hudson.ExtensionPoint;
 import hudson.model.AbstractDescribableImpl;
-import hudson.model.Descriptor;
 import jenkins.util.xstream.XStreamDOM;
 import jenkins.util.xstream.XStreamDOM.ConverterImpl;
 import net.sf.json.JSONObject;
@@ -35,9 +34,13 @@ public abstract class Ingredient extends AbstractDescribableImpl<Ingredient> imp
 
     /**
      * Imports this ingredient into the current Jenkins.
+     *
      * @param recipe
+     * @param reportList
+     *      Report what was actually done by adding {@link ImportReport} to this
+     *      (both success and non-fatal failures.)
      */
-    protected abstract void cook(Recipe recipe) throws IOException, InterruptedException;
+    protected abstract void cook(Recipe recipe, ImportReportList reportList) throws IOException, InterruptedException;
 
     protected static InputStream read(XStreamDOM dom) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
