@@ -1,22 +1,18 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
-import com.thoughtworks.xstream.io.xml.XppDriver;
 import hudson.Extension;
 import hudson.model.View;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
-import jenkins.util.xstream.XStreamDOM.ConverterImpl;
-import net.sf.json.JSONObject;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
-import org.kohsuke.stapler.StaplerRequest;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
+ * View.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class ViewIngredient extends Ingredient {
@@ -42,19 +38,15 @@ public class ViewIngredient extends Ingredient {
 
     @Override
     public void cook(Recipe recipe) throws IOException {
-        // expansion of this is deferred
         XStreamDOM actual = recipe.createImportOptions().apply(definition);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XStreamDOM.ConverterImpl c = new ConverterImpl();
-        c.marshal(actual, new XppDriver().createWriter(baos), null);
-
-        Jenkins.getInstance().createProjectFromXML(name,new ByteArrayInputStream(baos.toByteArray()));
+        View v = (View)Jenkins.XSTREAM2.unmarshal(actual.newReader());
+        Jenkins.getInstance().addView(v);
     }
 
     public static ViewIngredient fromView(View v) {
-        // TODO: ignore View.owner
         XStreamDOM dom = XStreamDOM.from(Jenkins.XSTREAM2,v);
+        // TODO: remove View.owner from DOM
         return new ViewIngredient(v.getViewName(),dom);
     }
 
