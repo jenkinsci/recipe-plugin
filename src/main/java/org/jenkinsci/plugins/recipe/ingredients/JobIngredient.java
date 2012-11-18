@@ -35,28 +35,43 @@ public class JobIngredient extends Ingredient {
      * Job name.
      */
     private String name;
+    /**
+     * Human readable text that explains what this job is.
+     */
+    private String description;
+
     private XStreamDOM definition;
 
-    public JobIngredient(String name, XStreamDOM definition) {
+    public JobIngredient(String name, String description, XStreamDOM definition) {
         this.name = name;
+        this.description = description;
         this.definition = definition;
     }
 
     @DataBoundConstructor
-    public JobIngredient(String name) {
+    public JobIngredient(String name, String description) {
         this.name = name;
+        this.description = description;
         AbstractProject i = Jenkins.getInstance().getItemByFullName(name, AbstractProject.class);
         if (i==null)
             throw new IllegalArgumentException("No such job: "+name);
         this.definition = XStreamDOM.from(i.getConfigFile().getXStream(),i);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public XStreamDOM getDefinition() {
@@ -76,9 +91,9 @@ public class JobIngredient extends Ingredient {
         reportList.add(new ImportReportImpl(j));
     }
 
-    public static JobIngredient fromJob(Job j) {
+    public static JobIngredient fromJob(Job j, String description) {
         XStreamDOM dom = XStreamDOM.from(j.getConfigFile().getXStream(),j);
-        return new JobIngredient(j.getName(),dom);
+        return new JobIngredient(j.getName(),description, dom);
     }
 
     public static class ImportReportImpl extends ImportReport {

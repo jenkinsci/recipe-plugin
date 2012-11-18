@@ -5,7 +5,5 @@ TODO:
  - we allow the job names to be changed during import.
    Any way to update references to them? (job names in a view, upstream/downstream references, ...)
 
- - allow JobIngredient to carry some human readable explanation of what this job does
-
 Plugin installation UI
 
