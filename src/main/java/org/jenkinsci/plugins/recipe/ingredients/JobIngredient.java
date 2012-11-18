@@ -5,11 +5,13 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
 import hudson.model.Job;
+import hudson.model.TopLevelItem;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
 import jenkins.util.xstream.XStreamDOM.ConverterImpl;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.jenkinsci.plugins.recipe.ImportReport;
 import org.jenkinsci.plugins.recipe.ImportReportList;
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
@@ -64,12 +66,21 @@ public class JobIngredient extends Ingredient {
         XStreamDOM.ConverterImpl c = new ConverterImpl();
         c.marshal(actual, new XppDriver().createWriter(baos), null);
 
-        Jenkins.getInstance().createProjectFromXML(name,new ByteArrayInputStream(baos.toByteArray()));
+        TopLevelItem j = Jenkins.getInstance().createProjectFromXML(name, new ByteArrayInputStream(baos.toByteArray()));
+        reportList.add(new ImportReportImpl(j));
     }
 
     public static JobIngredient fromJob(Job j) {
         XStreamDOM dom = XStreamDOM.from(j.getConfigFile().getXStream(),j);
         return new JobIngredient(j.getName(),dom);
+    }
+
+    public static class ImportReportImpl extends ImportReport {
+        public final TopLevelItem job;
+
+        public ImportReportImpl(TopLevelItem job) {
+            this.job = job;
+        }
     }
 
     @Extension

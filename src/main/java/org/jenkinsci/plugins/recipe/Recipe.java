@@ -81,9 +81,9 @@ public class Recipe extends AbstractDescribableImpl<Recipe> {
         }
     }
 
-    public void cook() throws IOException, InterruptedException {
+    public void cook(ImportReportList reportList) throws IOException, InterruptedException {
         for (Ingredient i : getIngredients())
-            i.cook(this, 0);
+            i.cook(this, reportList);
     }
 
     public ImportOptions createImportOptions() {

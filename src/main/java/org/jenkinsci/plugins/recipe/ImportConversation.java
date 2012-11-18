@@ -25,6 +25,8 @@ public class ImportConversation {
      */
     public Exception error;
 
+    public ImportReportList reportList = new ImportReportList();
+
     public ImportConversation(Recipe recipe) {
         this.recipe = recipe;
         Stapler.getCurrentRequest().getSession().setAttribute(SESSION_KEY, this);
@@ -39,8 +41,8 @@ public class ImportConversation {
 
         // permission checked by individual Ingredients
         try {
-            recipe.cook();
-            return HttpResponses.redirectToContextRoot();
+            recipe.cook(reportList=new ImportReportList());
+            return HttpResponses.redirectTo("report");
         } catch (IOException e) {
             error = e;
             return HttpResponses.redirectToDot();
