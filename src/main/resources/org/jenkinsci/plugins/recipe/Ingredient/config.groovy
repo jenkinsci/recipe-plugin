@@ -1,1 +1,1 @@
-include this,"export.groovy"
+include descriptor.clazz,"export"
