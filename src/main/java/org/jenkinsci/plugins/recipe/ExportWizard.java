@@ -1,7 +1,9 @@
 package org.jenkinsci.plugins.recipe;
 
 import hudson.Extension;
+import hudson.model.Descriptor;
 import hudson.model.ManagementLink;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -12,7 +14,7 @@ import java.io.IOException;
  * @author Kohsuke Kawaguchi
  */
 @Extension
-public class ExportWizard extends ManagementLink {
+public class ExportWizard extends ManagementLink implements RecipeWizard {
     @Override
     public String getIconFileName() {
         return "setting.png";
@@ -25,6 +27,18 @@ public class ExportWizard extends ManagementLink {
 
     public String getDisplayName() {
         return "Export Recipe";
+    }
+
+    public boolean isImport() {
+        return false;
+    }
+
+    public boolean isExport() {
+        return true;
+    }
+
+    public Descriptor getDescriptorByName(String id) {
+        return Jenkins.getInstance().getDescriptorByName(id);
     }
 
     public void doExport(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {

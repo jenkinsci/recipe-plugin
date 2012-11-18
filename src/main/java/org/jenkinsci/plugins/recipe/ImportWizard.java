@@ -1,7 +1,9 @@
 package org.jenkinsci.plugins.recipe;
 
 import hudson.Extension;
+import hudson.model.Descriptor;
 import hudson.model.ManagementLink;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.QueryParameter;
@@ -15,7 +17,7 @@ import java.net.URL;
  * @author Kohsuke Kawaguchi
  */
 @Extension
-public class ImportWizard extends ManagementLink {
+public class ImportWizard extends ManagementLink implements RecipeWizard {
     @Override
     public String getIconFileName() {
         return "setting.png";
@@ -28,6 +30,18 @@ public class ImportWizard extends ManagementLink {
 
     public String getDisplayName() {
         return "Import Recipe";
+    }
+
+    public boolean isImport() {
+        return true;
+    }
+
+    public boolean isExport() {
+        return false;
+    }
+
+    public Descriptor getDescriptorByName(String id) {
+        return Jenkins.getInstance().getDescriptorByName(id);
     }
 
     public HttpResponse doRetrieve(@QueryParameter URL url) throws IOException {

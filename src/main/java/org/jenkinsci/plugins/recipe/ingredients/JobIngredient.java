@@ -17,6 +17,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
+import org.jenkinsci.plugins.recipe.RecipeWizard;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -86,9 +87,13 @@ public class JobIngredient extends Ingredient {
             return AutoCompletionCandidates.ofJobNames(AbstractProject.class,value,null,Jenkins.getInstance());
         }
 
-        public FormValidation doCheckName(@QueryParameter String name) {
+        public FormValidation doCheckName(@QueryParameter String name, @AncestorInPath RecipeWizard wizard) {
             AbstractProject i = Jenkins.getInstance().getItemByFullName(name, AbstractProject.class);
-            if (i==null)    return FormValidation.error("No such job: "+name);
+            if (wizard.isExport()) {
+                if (i==null)    return FormValidation.error("No such job: "+name);
+            } else {
+                if (i!=null)    return FormValidation.error("You already have a job named "+name);
+            }
             return FormValidation.ok();
         }
     }
