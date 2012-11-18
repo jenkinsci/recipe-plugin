@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Group of {@link Ingredient}s that represent a set of configured stuff
+ * in Jenkins that gets transported from one Jenkins to another,
+ * for example for one person to share how he set up something to other people.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class Recipe extends AbstractDescribableImpl<Recipe> {

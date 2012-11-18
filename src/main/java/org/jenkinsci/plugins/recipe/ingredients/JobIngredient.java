@@ -25,9 +25,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
+ * {@link Ingredient} that transports a job definition
+ * (but no build records.)
+ *
  * @author Kohsuke Kawaguchi
  */
 public class JobIngredient extends Ingredient {
+    /**
+     * Job name.
+     */
     private String name;
     private XStreamDOM definition;
 

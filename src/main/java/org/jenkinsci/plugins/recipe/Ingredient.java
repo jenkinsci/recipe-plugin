@@ -14,7 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * An unit of a configured item in Jenkins that gets transported to another Jenkins instance.
+ *
+ * {@link Recipe} is a collection of {@link Ingredient}s.
+ *
  * @author Kohsuke Kawaguchi
+ * @see Recipe
  */
 public abstract class Ingredient extends AbstractDescribableImpl<Ingredient> implements ExtensionPoint {
     @Override
