@@ -9,5 +9,7 @@ TODO:
 
  - Come up with a central server to share templates
 
+ - Turn a build parameter into an import parameter
+
 Plugin installation UI
 
