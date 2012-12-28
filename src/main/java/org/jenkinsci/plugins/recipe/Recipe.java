@@ -14,11 +14,15 @@ import jenkins.util.xstream.XStreamDOM;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.recipe.ingredients.Parameter;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +36,7 @@ import java.util.Map;
  *
  * @author Kohsuke Kawaguchi
  */
-public class Recipe extends AbstractDescribableImpl<Recipe> {
+public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpResponse {
     private String version;
     private String title;
     private String description;
@@ -43,7 +47,7 @@ public class Recipe extends AbstractDescribableImpl<Recipe> {
         this.version = version;
         this.title = title;
         this.description = description;
-        this.ingredients.addAll(ingredients);
+        this.ingredients.addAll(Util.fixNull(ingredients));
     }
 
     public String getVersion() {
@@ -76,6 +80,22 @@ public class Recipe extends AbstractDescribableImpl<Recipe> {
 
     public List<Parameter> getParameters() {
         return Util.filter(ingredients,Parameter.class);
+    }
+
+    public void writeTo(OutputStream out) throws IOException {
+        XSTREAM.toXML(this,out);
+    }
+
+    public void writeTo(Writer out) throws IOException {
+        XSTREAM.toXML(this,out);
+    }
+
+    /**
+     * Writes this object as HTTP response.
+     */
+    public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException, ServletException {
+        rsp.setContentType("application/xml;charset=UTF-8");
+        Recipe.XSTREAM.toXML(this,rsp.getOutputStream());
     }
 
     public void apply(StaplerRequest req) throws ServletException {
@@ -149,4 +169,9 @@ public class Recipe extends AbstractDescribableImpl<Recipe> {
         for (IngredientDescriptor d : IngredientDescriptor.all())
             XSTREAM.alias(d.getPersistenceElementName(),d.clazz);
     }
+
+    /**
+     * Common file extension for Jenkins recipe.
+     */
+    public static final String EXTENSION = ".jrc";
 }
