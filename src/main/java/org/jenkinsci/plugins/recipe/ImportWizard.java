@@ -32,6 +32,11 @@ public class ImportWizard extends ManagementLink implements RecipeWizard {
         return "Import Recipe";
     }
 
+    @Override
+    public String getDescription() {
+        return "Import jobs, views, and so on from a recipe XML file.";
+    }
+
     public boolean isImport() {
         return true;
     }

@@ -34,6 +34,11 @@ public class ExportWizard extends ManagementLink implements RecipeWizard, Descri
         return "Export Recipe";
     }
 
+    @Override
+    public String getDescription() {
+        return "Export jobs, views, and so on as an XML file so that others can import them into their Jenkins.";
+    }
+
     public boolean isImport() {
         return false;
     }
