@@ -5,6 +5,7 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.ManagementLink;
 import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.recipe.mechanisms.DownloadMechanism;
 import org.jenkinsci.plugins.recipe.mechanisms.ExportMechanism;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
@@ -52,7 +53,7 @@ public class ExportWizard extends ManagementLink implements RecipeWizard, Descri
     // TODO: create a conversation scoped object and move this and transport
     public Recipe getRecipe() {
         // remember the last recipe served and start from there
-        ExportMechanism t = getTransport();
+        ExportMechanism t = getMechanism();
         if (t!=null)    return t.getRecipe();
         return null;
     }
@@ -60,8 +61,10 @@ public class ExportWizard extends ManagementLink implements RecipeWizard, Descri
     /**
      * Maps the currently selected export mechanism to the URL space.
      */
-    public ExportMechanism getTransport() {
-        return (ExportMechanism)Stapler.getCurrentRequest().getSession().getAttribute(RECIPE);
+    public ExportMechanism getMechanism() {
+        ExportMechanism e = (ExportMechanism) Stapler.getCurrentRequest().getSession().getAttribute(RECIPE);
+        if (e==null)    e = new DownloadMechanism();    // default to the download
+        return e;
     }
 
     public void doExport(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
@@ -70,7 +73,7 @@ public class ExportWizard extends ManagementLink implements RecipeWizard, Descri
         mechanism.setRecipe(recipe);
 
         req.getSession().setAttribute(RECIPE,mechanism);
-        Util.sendRedirect(rsp, HttpServletResponse.SC_SEE_OTHER,"transport/export");
+        Util.sendRedirect(rsp, HttpServletResponse.SC_SEE_OTHER,"mechanism/export");
     }
 
     private static final String RECIPE = ExportWizard.class.getName()+".recipe";
