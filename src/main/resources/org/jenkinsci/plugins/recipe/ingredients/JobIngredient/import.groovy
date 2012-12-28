@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.recipe.ingredients.Parameter;
+package org.jenkinsci.plugins.recipe.ingredients.JobIngredient;
 
 def f = namespace(lib.FormTagLib)
 
