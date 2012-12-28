@@ -5,6 +5,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -29,7 +30,12 @@ public class DownloadMechanism extends ExportMechanism {
      * To serve the recipe under arbitrary file name.
      */
     public HttpResponse doDynamic() throws IOException, ServletException {
-        return getRecipe();
+        return new HttpResponse() {
+            public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException, ServletException {
+                rsp.setHeader("Content-Disposition","attachment"); // force a download
+                getRecipe().generateResponse(req,rsp,node);
+            }
+        };
     }
 
     @Extension
