@@ -12,7 +12,8 @@ l.layout {
     l.main_panel {
         h1 title
 
-        context.setVariable("descriptor", my.descriptor)
+        set("instance", my)
+        set("descriptor", my.descriptor)
 
         f.form(action:"export",method:"POST") {
             f.section(title:_("Ingredients")) {
