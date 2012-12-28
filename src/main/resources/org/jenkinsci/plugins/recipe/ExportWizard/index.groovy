@@ -41,8 +41,11 @@ l.layout {
             }
 
             f.block { // TODO: switch to <f:bottomButtonBar>
-                div(style:"margin-top:1em")
-                f.submit(value:_("Export Recipe"))
+                div(id:"bottom-sticker") {
+                    div(class:"bottom-sticker-inner") {
+                        f.submit(value:_("Export Recipe"))
+                    }
+                }
             }
         }
     }
