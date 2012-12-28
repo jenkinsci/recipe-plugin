@@ -23,7 +23,7 @@ public class DownloadMechanism extends ExportMechanism {
     @Override
     public HttpResponse doExport(StaplerRequest req) {
         // redirect once to get the file name in the URL
-        return HttpResponses.redirectTo(getRecipe().getTitle()+".jrc");
+        return HttpResponses.redirectTo(getRecipe().getFileName());
     }
 
     public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {

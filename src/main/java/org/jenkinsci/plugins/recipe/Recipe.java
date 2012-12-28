@@ -66,6 +66,13 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
         this.title = title;
     }
 
+    /**
+     * Returns the suggested file name for this recipe.
+     */
+    public String getFileName() {
+        return title.replace("/","")+EXTENSION;
+    }
+
     public String getDescription() {
         return description;
     }

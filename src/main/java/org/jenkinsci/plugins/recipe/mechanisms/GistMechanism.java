@@ -12,7 +12,6 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -39,7 +38,7 @@ public class GistMechanism extends ExportMechanism {
                 .accumulate("description",r.getTitle())
                 .accumulate("public",true)
                 .accumulate("files", new JSONObject()
-                        .accumulate(r.getTitle() + r.EXTENSION, new JSONObject()
+                        .accumulate(r.getFileName(), new JSONObject()
                                 .accumulate("content",sw.toString())));
 
         URL url = new URL("https://api.github.com/gists");
