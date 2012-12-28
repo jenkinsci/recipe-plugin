@@ -51,6 +51,9 @@ public class ExportWizard extends ManagementLink implements RecipeWizard, Descri
 
     // TODO: create a conversation scoped object and move this and transport
     public Recipe getRecipe() {
+        // remember the last recipe served and start from there
+        ExportMechanism t = getTransport();
+        if (t!=null)    return t.getRecipe();
         return null;
     }
 
