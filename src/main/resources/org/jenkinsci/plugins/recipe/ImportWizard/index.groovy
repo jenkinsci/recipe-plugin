@@ -7,7 +7,10 @@ l.layout {
     def title = _("Import Recipe")
     l.header(title:title)
     l.main_panel {
-        h1 title
+        h1 {
+            img(src:my.iconFileName)
+            text(" "+title)
+        }
 
         f.form(action:"retrieve",method:"POST") {
             f.entry(title:_("Recipe URL")) {

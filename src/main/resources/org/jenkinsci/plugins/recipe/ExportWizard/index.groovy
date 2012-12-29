@@ -1,7 +1,6 @@
 package org.jenkinsci.plugins.recipe.ExportWizard
 
-import org.jenkinsci.plugins.recipe.Recipe
-import org.jenkinsci.plugins.recipe.mechanisms.ExportMechanismDescriptor;
+import org.jenkinsci.plugins.recipe.mechanisms.ExportMechanismDescriptor
 
 def f = namespace(lib.FormTagLib)
 def l = namespace(lib.LayoutTagLib)
@@ -10,7 +9,10 @@ l.layout {
     def title = _("Export Recipe")
     l.header(title:title)
     l.main_panel {
-        h1 title
+        h1 {
+            img(src:my.iconFileName)
+            text(" "+title)
+        }
 
         set("instance", my)
         set("descriptor", my.descriptor)
@@ -24,20 +26,6 @@ l.layout {
                 f.block {
                     f.hetero_radio(field:"mechanism",descriptors:ExportMechanismDescriptor.all())
                 }
-//
-//                // basically emulating /lib/hudson/newFromList except the name field.
-//                ExportMechanismDescriptor.all().each { ed ->
-//                    f.block {
-//                        label {
-//                            input(type:"radio",name:"mode",value:ed.id)
-//                            b(ed.displayName)
-//                        }
-//                    }
-//                    f.entry {
-//                        set("instance",ed);
-//                        include(ed,"newInstanceDetail");
-//                    }
-//                }
             }
 
             f.block { // TODO: switch to <f:bottomButtonBar>
