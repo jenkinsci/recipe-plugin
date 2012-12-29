@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Group of {@link Ingredient}s that represent a set of configured stuff
@@ -37,17 +38,30 @@ import java.util.Map;
  * @author Kohsuke Kawaguchi
  */
 public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpResponse {
+    private String id;
     private String version;
-    private String title;
+    private String displayName;
     private String description;
     private List<Ingredient> ingredients = new ArrayList<Ingredient>();
 
     @DataBoundConstructor
-    public Recipe(String version, String title, String description, List<Ingredient> ingredients) {
+    public Recipe(String id, String version, String displayName, String description, List<Ingredient> ingredients) {
+        setId(id);
         this.version = version;
-        this.title = title;
+        this.displayName = displayName;
         this.description = description;
         this.ingredients.addAll(Util.fixNull(ingredients));
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        if (ID_PATTERN.matcher(id).matches())
+            this.id = id;
+        else
+            throw new IllegalArgumentException("Invalid ID: "+id);
     }
 
     public String getVersion() {
@@ -58,19 +72,19 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
         this.version = version;
     }
 
-    public String getTitle() {
-        return title;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     /**
      * Returns the suggested file name for this recipe.
      */
     public String getFileName() {
-        return title.replace("/","")+EXTENSION;
+        return id+EXTENSION;
     }
 
     public String getDescription() {
@@ -181,4 +195,6 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
      * Common file extension for Jenkins recipe.
      */
     public static final String EXTENSION = ".jrc";
+
+    public static final Pattern ID_PATTERN = Pattern.compile("[A-Za-z0-9\\-._]+");
 }

@@ -4,7 +4,10 @@ import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 
 def f = namespace(lib.FormTagLib)
 
-f.entry(title:"Title",field:"title") {
+f.entry(title:"ID Name",field:"id") {
+    f.textbox()
+}
+f.entry(title:"Display Name",field:"displayName") {
     f.textbox()
 }
 f.entry(title:"Version",field:"version") {

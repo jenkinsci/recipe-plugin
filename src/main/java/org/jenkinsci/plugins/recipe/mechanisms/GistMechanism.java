@@ -35,7 +35,7 @@ public class GistMechanism extends ExportMechanism {
         r.writeTo(sw);
 
         JSONObject payload = new JSONObject()
-                .accumulate("description",r.getTitle())
+                .accumulate("description",r.getDisplayName())
                 .accumulate("public",true)
                 .accumulate("files", new JSONObject()
                         .accumulate(r.getFileName(), new JSONObject()

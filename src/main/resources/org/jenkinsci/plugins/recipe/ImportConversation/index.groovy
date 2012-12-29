@@ -4,7 +4,7 @@ def f = namespace(lib.FormTagLib)
 def l = namespace(lib.LayoutTagLib)
 
 l.layout {
-    def title = _("Importing ${my.recipe.title}")
+    def title = _("Importing ${my.recipe.displayName}")
     l.header(title:title)
     l.main_panel {
         h1 title
