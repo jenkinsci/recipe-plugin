@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 /**
+ * Uploads to http://recipe.jenkins-ci.org/
+ *
  * @author Kohsuke Kawaguchi
  */
 public class CommunityMechanism extends ExportMechanism {
@@ -32,7 +34,7 @@ public class CommunityMechanism extends ExportMechanism {
     public static class DescriptorImpl extends ExportMechanismDescriptor {
         @Override
         public String getDisplayName() {
-            return "Download to your computer";
+            return "Share it with the Jenkins community";
         }
     }
 }

@@ -67,7 +67,7 @@ public class GistMechanism extends ExportMechanism {
     public static class DescriptorImpl extends ExportMechanismDescriptor {
         @Override
         public String getDisplayName() {
-            return "Creates a Gist";
+            return "Create a Gist";
         }
     }
 }
