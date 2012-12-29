@@ -194,7 +194,7 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
     /**
      * Common file extension for Jenkins recipe.
      */
-    public static final String EXTENSION = ".jrc";
+    public static final String EXTENSION = ".jrcp";
 
     public static final Pattern ID_PATTERN = Pattern.compile("[A-Za-z0-9\\-._]+");
 }
