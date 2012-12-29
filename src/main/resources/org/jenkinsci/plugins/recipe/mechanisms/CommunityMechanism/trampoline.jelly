@@ -1,0 +1,20 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
+  <l:layout title="Redirecting...">
+    <l:main-panel>
+      <!--
+        Auto submits the form to the community server
+      -->
+      <p>
+        Submitting your changes to the server...
+      </p>
+      <form name="submission" action="http://recipe.jenkins-ci.org/start" method="post" accept-charset="utf-8" style="display:none">
+        <textarea name="payload">${it.getRecipeAsString()}</textarea>
+        <button type="submit">Continue...</button>
+      </form>
+      <script>
+        window.onload = function() {document.forms['submission'].submit();}
+      </script>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>
