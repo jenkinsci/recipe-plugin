@@ -22,7 +22,7 @@ import java.io.IOException;
 public class ExportWizard extends ManagementLink implements RecipeWizard, Describable<ExportWizard> {
     @Override
     public String getIconFileName() {
-        return "setting.png";
+        return "/plugin/recipe/images/48x48/export.png";
     }
 
     @Override

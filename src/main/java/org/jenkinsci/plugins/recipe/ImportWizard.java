@@ -20,7 +20,7 @@ import java.net.URL;
 public class ImportWizard extends ManagementLink implements RecipeWizard {
     @Override
     public String getIconFileName() {
-        return "setting.png";
+        return "/plugin/recipe/images/48x48/import.png";
     }
 
     @Override
