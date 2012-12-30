@@ -22,7 +22,7 @@ import java.io.IOException;
 public class ExportWizard extends ManagementLink implements RecipeWizard, Describable<ExportWizard> {
     @Override
     public String getIconFileName() {
-        return Jenkins.RESOURCE_PATH+"/plugin/recipe/images/48x48/export.png";
+        return "/plugin/recipe/images/48x48/export.png";
     }
 
     @Override

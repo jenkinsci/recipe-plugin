@@ -8,6 +8,7 @@ import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URL;
 
@@ -18,9 +19,16 @@ import java.net.URL;
  */
 @Extension
 public class ImportWizard extends ManagementLink implements RecipeWizard {
+    @Inject
+    private RecipeCatalog catalog;
+
+    public RecipeCatalog getCatalog() {
+        return catalog;
+    }
+
     @Override
     public String getIconFileName() {
-        return Jenkins.RESOURCE_PATH+"/plugin/recipe/images/48x48/import.png";
+        return "/plugin/recipe/images/48x48/import.png";
     }
 
     @Override
@@ -50,9 +58,12 @@ public class ImportWizard extends ManagementLink implements RecipeWizard {
     }
 
     public HttpResponse doRetrieve(@QueryParameter URL url) throws IOException {
-        Recipe r = Recipe.load(url);
+        return start(Recipe.load(url));
+    }
+
+    public HttpResponse start(Recipe r) {
         ImportConversation ic = new ImportConversation(r);
-        return HttpResponses.redirectTo("conversation");
+        return HttpResponses.redirectViaContextPath(getUrlName() + "/conversation");
     }
 
     /**
@@ -60,5 +71,9 @@ public class ImportWizard extends ManagementLink implements RecipeWizard {
      */
     public ImportConversation getConversation() {
         return ImportConversation.getCurrent();
+    }
+
+    public static ImportWizard get() {
+        return all().get(ImportWizard.class);
     }
 }
