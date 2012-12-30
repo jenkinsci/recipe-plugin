@@ -57,12 +57,11 @@ public class ImportWizard extends ManagementLink implements RecipeWizard {
         return Jenkins.getInstance().getDescriptorByName(id);
     }
 
+    /**
+     * Retrieves the recipe and starts the conversation to import it.
+     */
     public HttpResponse doRetrieve(@QueryParameter URL url) throws IOException {
-        return start(Recipe.load(url));
-    }
-
-    public HttpResponse start(Recipe r) {
-        ImportConversation ic = new ImportConversation(r);
+        ImportConversation ic = new ImportConversation(Recipe.load(url));
         return HttpResponses.redirectViaContextPath(getUrlName() + "/conversation");
     }
 
