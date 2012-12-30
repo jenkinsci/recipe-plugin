@@ -126,6 +126,9 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
         }
     }
 
+    /**
+     * Imports this ingredient into the current Jenkins.
+     */
     public void cook(ImportReportList reportList) throws IOException, InterruptedException {
         for (Ingredient i : getIngredients())
             i.cook(this, reportList);
