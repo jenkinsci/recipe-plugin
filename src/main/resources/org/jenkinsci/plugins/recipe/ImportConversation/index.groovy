@@ -41,7 +41,7 @@ l.layout {
                         }
                     }
                 }
-                f.bottomButtonBar {
+                f.block {// TODO: switch to bottomButtonBar with new Jenkins
                     f.submit(name:"apply",value:_("Install/update plugins"))
                     f.submit(name:"skip",value:_("proceedAnyway"))
                 }
@@ -57,7 +57,7 @@ l.layout {
                         include i,"import"
                     }
                 }
-                f.bottomButtonBar {
+                f.block { // TODO: switch to bottomButtonBar with new Jenkins
                     f.submit(value:_("Import"))
                 }
             }

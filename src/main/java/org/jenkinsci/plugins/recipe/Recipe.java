@@ -179,7 +179,7 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
 
         // look at the plugin designations and internalize them via PluginIngredient
         Recipe recipe = (Recipe) XSTREAM.fromXML(new ByteArrayInputStream(payload));
-        Map<String, VersionNumber> map = Jenkins.getInstance().getPluginManager().parseRequestedPlugins(new ByteArrayInputStream(payload));
+        Map<String, VersionNumber> map = org.jenkinsci.plugins.recipe.Util.parseRequestedPlugins(new ByteArrayInputStream(payload));
         if (!map.isEmpty()) {
             StringBuilder buf = new StringBuilder();
             for (Entry<String, VersionNumber> e : map.entrySet()) {

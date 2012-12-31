@@ -1,11 +1,21 @@
 package org.jenkinsci.plugins.recipe;
 
+import hudson.util.IOException2;
+import hudson.util.VersionNumber;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static javax.servlet.http.HttpServletResponse.SC_MOVED_TEMPORARILY;
 
@@ -54,5 +64,39 @@ public class Util {
         rsp.setStatus(statusCode);
         rsp.setHeader("Location",url);
         rsp.getOutputStream().close();
+    }
+
+    /**
+     * Parses configuration XML files and picks up references to XML files.
+     *
+     * TODO: switch to Pluginmanager.parseRequestedPlugins in 1.498
+     */
+    static Map<String,VersionNumber> parseRequestedPlugins(InputStream configXml) throws IOException {
+        final Map<String,VersionNumber> requestedPlugins = new TreeMap<String,VersionNumber>();
+        try {
+            SAXParserFactory.newInstance().newSAXParser().parse(configXml, new DefaultHandler() {
+                @Override public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                    String plugin = attributes.getValue("plugin");
+                    if (plugin == null) {
+                        return;
+                    }
+                    if (!plugin.matches("[^@]+@[^@]+")) {
+                        throw new SAXException("Malformed plugin attribute: " + plugin);
+                    }
+                    int at = plugin.indexOf('@');
+                    String shortName = plugin.substring(0, at);
+                    VersionNumber existing = requestedPlugins.get(shortName);
+                    VersionNumber requested = new VersionNumber(plugin.substring(at + 1));
+                    if (existing == null || existing.compareTo(requested) < 0) {
+                        requestedPlugins.put(shortName, requested);
+                    }
+                }
+            });
+        } catch (SAXException x) {
+            throw new IOException2("Failed to parse XML",x);
+        } catch (ParserConfigurationException e) {
+            throw new AssertionError(e); // impossible since we don't tweak XMLParser
+        }
+        return requestedPlugins;
     }
 }
