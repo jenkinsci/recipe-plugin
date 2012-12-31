@@ -1,29 +1,65 @@
-package org.jenkinsci.plugins.recipe.ImportConversation;
+package org.jenkinsci.plugins.recipe.ImportConversation
 
-def f = namespace(lib.FormTagLib)
-def l = namespace(lib.LayoutTagLib)
+f = namespace(lib.FormTagLib)
+l = namespace(lib.LayoutTagLib)
 
+/*
+    The first step: show what's in the recipe and ask the user a confirmation.
+ */
 l.layout {
     def title = _("Importing ${my.recipe.displayName}")
     l.header(title:title)
     l.main_panel {
         h1 title
 
+        p(class:"warning", _("blurb"))
+
         h3 _("Description")
         p my.recipe.description
 
-        h3 _("Contents to be imported")
-        f.form(action:"cook",method:"POST") {
-            int n=0;
-            my.recipe.ingredients.each { i ->
-                f.section(name:"ingredient${n++}",title:i.descriptor.displayName) {
-                    context.setVariable("instance",i)
-                    context.setVariable("descriptor",i.descriptor)
-                    include i,"import"
+        def plugins = my.pluginsThatRequireAttention;
+
+        if (!plugins.isEmpty()) {
+            h3 _("Plugins that are needed")
+            div(class:"warning", _("withoutPluginRecipeMightNotWork"))
+            f.form(action:"applyPlugins",method:"POST") {
+                plugins.each { pi ->
+                    if (pi.installSource!=null) {
+                        if (pi.current==null) {
+                            f.entry {
+                                f.checkbox(name:"plugin."+pi.name, title:_("action.installPlugin",pi.installSource.displayName), checked:true)
+                            }
+                        } else {
+                            f.entry {
+                                f.checkbox(name:"plugin."+pi.name, title:_("action.updatePlugin", pi.installSource.displayName,
+                                        pi.installSource.version, pi.version, pi.current.version), checked:true)
+                            }
+                        }
+                    } else {
+                        f.entry {
+                            div(class:"error", _("action.notInstallable",pi.name))
+                        }
+                    }
+                }
+                f.bottomButtonBar {
+                    f.submit(name:"apply",value:_("Install/update plugins"))
+                    f.submit(name:"skip",value:_("proceedAnyway"))
                 }
             }
-            f.block {
-                f.submit(value:_("Import"))
+        } else {
+            h3 _("Contents to be imported")
+            f.form(action:"cook",method:"POST") {
+                int n=0;
+                my.recipe.ingredients.each { i ->
+                    f.section(name:"ingredient${n++}",title:i.descriptor.displayName) {
+                        context.setVariable("instance",i)
+                        context.setVariable("descriptor",i.descriptor)
+                        include i,"import"
+                    }
+                }
+                f.bottomButtonBar {
+                    f.submit(value:_("Import"))
+                }
             }
         }
     }

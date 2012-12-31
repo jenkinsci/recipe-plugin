@@ -7,12 +7,16 @@ import hudson.init.Initializer;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.util.FormValidation;
+import hudson.util.IOUtils;
 import hudson.util.VariableResolver;
 import hudson.util.VersionNumber;
 import hudson.util.XStream2;
+import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
 import net.sf.json.JSONObject;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jenkinsci.plugins.recipe.ingredients.Parameter;
+import org.jenkinsci.plugins.recipe.ingredients.PluginIngredient;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.QueryParameter;
@@ -20,6 +24,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -28,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 /**
@@ -100,7 +106,11 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
     }
 
     public List<Parameter> getParameters() {
-        return Util.filter(ingredients,Parameter.class);
+        return getIngredients(Parameter.class);
+    }
+
+    public <T extends Ingredient> List<T> getIngredients(Class<T> type) {
+        return Util.filter(ingredients,type);
     }
 
     public void writeTo(OutputStream out) throws IOException {
@@ -165,7 +175,22 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
      * Loads the recipe from URL.
      */
     public static Recipe load(URL url) throws IOException {
-        return (Recipe)XSTREAM.fromXML(url.openStream());
+        byte[] payload = IOUtils.toByteArray(url.openStream());
+
+        // look at the plugin designations and internalize them via PluginIngredient
+        Recipe recipe = (Recipe) XSTREAM.fromXML(new ByteArrayInputStream(payload));
+        Map<String, VersionNumber> map = Jenkins.getInstance().getPluginManager().parseRequestedPlugins(new ByteArrayInputStream(payload));
+        if (!map.isEmpty()) {
+            StringBuilder buf = new StringBuilder();
+            for (Entry<String, VersionNumber> e : map.entrySet()) {
+                if (buf.length()>0) buf.append(',');
+                buf.append(e.getKey()).append('@').append(e.getValue());
+            }
+            PluginIngredient pi = new PluginIngredient(buf.toString());
+            recipe.getIngredients().add(pi);
+        }
+
+        return recipe;
     }
 
     @Extension
