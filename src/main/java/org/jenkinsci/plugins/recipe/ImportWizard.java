@@ -1,15 +1,12 @@
 package org.jenkinsci.plugins.recipe;
 
-import hudson.*;
+import hudson.Extension;
 import hudson.model.Descriptor;
-import hudson.model.Failure;
 import hudson.model.ManagementLink;
 import jenkins.model.Jenkins;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.FilenameUtils;
-import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.QueryParameter;
@@ -85,6 +82,9 @@ public class ImportWizard extends ManagementLink implements RecipeWizard {
         return HttpResponses.redirectViaContextPath(getUrlName() + "/conversation");
     }
 
+    /**
+     * Accepts submitted recipe.
+     */
     public HttpResponse doUpload(StaplerRequest req) throws IOException, ServletException {
         try {
             ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
