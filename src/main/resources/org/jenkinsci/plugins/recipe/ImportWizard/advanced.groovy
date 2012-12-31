@@ -21,10 +21,20 @@ l.layout {
             }
             tr {
                 td(class:"pane") {
-                    h1 "Install from URL"
+                    h1 _("Install from URL")
                     f.form(action:"retrieve",method:"POST") {
                         f.entry(title:_("Recipe URL")) {
                             f.textbox(name:"url")
+                        }
+                        f.block {
+                            f.submit(value:_("Next"))
+                        }
+                    }
+
+                    h1 _("Upload from disk")
+                    f.form(action:"upload",method:"POST",enctype:"multipart/form-data") {
+                        f.entry(title:_("Recipe File")) {
+                            input (type:"file", name:"file", class:"setting-input", size:40)
                         }
                         f.block {
                             f.submit(value:_("Next"))

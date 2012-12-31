@@ -1,7 +1,5 @@
 package org.jenkinsci.plugins.recipe.ImportConversation
 
-import org.jenkinsci.plugins.recipe.ingredients.PluginIngredient
-
 f = namespace(lib.FormTagLib)
 l = namespace(lib.LayoutTagLib)
 
@@ -14,7 +12,7 @@ l.layout {
     l.main_panel {
         h1 title
 
-        p(class:"warning", _("blurb"))
+        p _("blurb")
 
         h3 _("Description")
         p my.recipe.description
@@ -22,7 +20,7 @@ l.layout {
         def plugins = my.pluginsThatRequireAttention;
 
         if (!plugins.isEmpty()) {
-            h3 _("Plugins that are needed")
+            h2 _("Plugins that are needed")
             div(class:"warning", _("withoutPluginRecipeMightNotWork"))
             f.form(action:"applyPlugins",method:"POST") {
                 plugins.each { pi ->
@@ -49,7 +47,7 @@ l.layout {
                 }
             }
         } else {
-            h3 _("Contents to be imported")
+            h2 _("Contents to be imported")
             f.form(action:"cook",method:"POST") {
                 int n=0;
                 my.recipe.ingredients.findAll { it.isVisibleDuringImport() }.each { i ->

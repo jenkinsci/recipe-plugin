@@ -1,14 +1,23 @@
 package org.jenkinsci.plugins.recipe;
 
-import hudson.Extension;
+import hudson.*;
 import hudson.model.Descriptor;
+import hudson.model.Failure;
 import hudson.model.ManagementLink;
 import jenkins.model.Jenkins;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
+import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
 import javax.inject.Inject;
+import javax.servlet.ServletException;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -67,8 +76,32 @@ public class ImportWizard extends ManagementLink implements RecipeWizard {
         if (url.getProtocol().equals("file"))
             Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
 
+        return retrieve(url);
+    }
+
+    // private, because this is outside the access control
+    private HttpResponse retrieve(URL url) throws IOException {
         ImportConversation ic = new ImportConversation(Recipe.load(url));
         return HttpResponses.redirectViaContextPath(getUrlName() + "/conversation");
+    }
+
+    public HttpResponse doUpload(StaplerRequest req) throws IOException, ServletException {
+        try {
+            ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
+
+            // Parse the request
+            FileItem fileItem = (FileItem) upload.parseRequest(req).get(0);
+
+            File f = File.createTempFile("uploaded", "jrcp");
+            fileItem.write(f);
+            fileItem.delete();
+
+            return retrieve(f.toURI().toURL());
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {// grrr. fileItem.write throws this
+            throw new ServletException(e);
+        }
     }
 
     /**
