@@ -28,6 +28,13 @@ public abstract class Ingredient extends AbstractDescribableImpl<Ingredient> imp
     }
 
     /**
+     * Return false if this recipe needs to be hidden during the import conversation.
+     */
+    public boolean isVisibleDuringImport() {
+        return true;
+    }
+
+    /**
      * Apply the import options to this ingredient
      * (such as parameter values, variable names, etc.)
      *

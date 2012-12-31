@@ -37,6 +37,11 @@ public class PluginIngredient extends Ingredient {
         this.names = Util.join(names, " ");
     }
 
+    @Override
+    public boolean isVisibleDuringImport() {
+        return false;
+    }
+
     public List<String> getNameList() {
         return Arrays.asList(names.split("[, \t]+"));
     }
@@ -54,44 +59,7 @@ public class PluginIngredient extends Ingredient {
 
     @Override
     protected void cook(Recipe recipe, ImportReportList reportList) throws IOException, InterruptedException {
-
-        for (Item i : parse()) {
-            i.cook(reportList);
-        }
-
-        PluginManager pm = Jenkins.getInstance().pluginManager;
-        UpdateCenter uc = Jenkins.getInstance().getUpdateCenter();
-
-        for (String name : getNameList()) {
-            String version=null;
-            int idx =name.lastIndexOf('@');
-            if (idx>=0) {
-                version = name.substring(idx+1);
-                name = name.substring(0,idx);
-            }
-
-            try {
-                UpdateSite.Plugin p = uc.getPlugin(name);
-                PluginWrapper cur = pm.getPlugin(name);
-                if (cur==null) {
-                    p.deploy(true).get();
-                } else {
-                    if (version!=null) {
-                        if (new VersionNumber(version).compareTo(cur.getVersionNumber())>0) {
-                            p.deploy(true).get();
-                        } else {
-                            // already have up-to-date version
-                        }
-                    } else {
-                        // some version is present in this system, but there's also an update
-                        // there can be many valid strategies, but let's stick with what we have
-                        // TODO: maybe warn the user if there's an update?
-                    }
-                }
-            } catch (ExecutionException e) {
-                throw new IOException2("Failed to install plugin: "+name,e);
-            }
-        }
+        // plugin needs to be imported prior to recipe cooking, and must be handled separately
     }
 
     /**

@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.recipe.ImportConversation
 
+import org.jenkinsci.plugins.recipe.ingredients.PluginIngredient
+
 f = namespace(lib.FormTagLib)
 l = namespace(lib.LayoutTagLib)
 
@@ -50,7 +52,7 @@ l.layout {
             h3 _("Contents to be imported")
             f.form(action:"cook",method:"POST") {
                 int n=0;
-                my.recipe.ingredients.each { i ->
+                my.recipe.ingredients.findAll { it.isVisibleDuringImport() }.each { i ->
                     f.section(name:"ingredient${n++}",title:i.descriptor.displayName) {
                         context.setVariable("instance",i)
                         context.setVariable("descriptor",i.descriptor)

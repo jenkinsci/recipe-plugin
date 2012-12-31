@@ -17,7 +17,7 @@ l.layout {
         }
 
         p {
-            a(href:rootURL, _("Go back to the top page"))
+            a(href:rootURL+'/', _("Go back to the top page"))
         }
     }
 }
