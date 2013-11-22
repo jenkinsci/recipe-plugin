@@ -9,6 +9,7 @@
   <artifactId>recipe</artifactId>
   <version>1.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
+  <name>Recipe Plugin</name>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/Recipe+Plugin</url>
 
   <dependencies>
