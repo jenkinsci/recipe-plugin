@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.recipe.ingredients;
 
 import com.thoughtworks.xstream.io.xml.XppDriver;
 import hudson.Extension;
+import hudson.model.AbstractItem;
 import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
 import hudson.model.Job;
@@ -23,6 +24,10 @@ import org.kohsuke.stapler.QueryParameter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import jenkins.model.ModifiableTopLevelItemGroup;
 
 /**
  * {@link Ingredient} that transports a job definition
@@ -87,7 +92,17 @@ public class JobIngredient extends Ingredient {
         XStreamDOM.ConverterImpl c = new ConverterImpl();
         c.marshal(actual, new XppDriver().createWriter(baos), null);
 
-        TopLevelItem j = Jenkins.getInstance().createProjectFromXML(name, new ByteArrayInputStream(baos.toByteArray()));
+        ModifiableTopLevelItemGroup g = Jenkins.getInstance();
+        TopLevelItem j = g.getItem(name);
+        InputStream is = new ByteArrayInputStream(baos.toByteArray());
+        if (j == null) {
+            j = g.createProjectFromXML(name, is);
+        } else if (j instanceof AbstractItem) {
+            Source source = new StreamSource(is);
+            ((AbstractItem) j).updateByXml(source);
+        } else {
+            throw new IOException("Cannot update " + j + " in place");
+        }
         reportList.add(new ImportReportImpl(j));
     }
 
@@ -98,6 +113,7 @@ public class JobIngredient extends Ingredient {
 
     public static class ImportReportImpl extends ImportReport {
         public final TopLevelItem job;
+        // TODO should have a flag for updated existing job so we can say “Updated job” rather than “Created job”
 
         public ImportReportImpl(TopLevelItem job) {
             this.job = job;
@@ -120,7 +136,9 @@ public class JobIngredient extends Ingredient {
             if (wizard.isExport()) {
                 if (i==null)    return FormValidation.error("No such job: "+name);
             } else {
-                if (i!=null)    return FormValidation.error("You already have a job named "+name);
+                if (i != null) {
+                    return FormValidation.warning("You already have a job named " + name + "; its configuration will be overwritten (but history retained)");
+                }
             }
             return FormValidation.ok();
         }
