@@ -10,7 +10,7 @@ l.layout {
     l.header(title:title)
     l.main_panel {
         h1 {
-            img(src:my.iconFileName)
+            img(src:rootURL + my.iconFileName)
             text(" "+title)
         }
 
