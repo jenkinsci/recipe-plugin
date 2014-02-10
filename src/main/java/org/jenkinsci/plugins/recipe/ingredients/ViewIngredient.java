@@ -1,15 +1,14 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
-import hudson.Extension;
 import hudson.model.View;
+import java.io.IOException;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
 import org.jenkinsci.plugins.recipe.ImportReportList;
 import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
-
-import java.io.IOException;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * View.
@@ -23,6 +22,15 @@ public class ViewIngredient extends Ingredient {
     public ViewIngredient(String name, XStreamDOM definition) {
         this.name = name;
         this.definition = definition;
+    }
+
+    @DataBoundConstructor public ViewIngredient(String name) {
+        this.name = name;
+        View v = Jenkins.getInstance().getView(name); // TODO handle views of folders
+        if (v == null) {
+            throw new IllegalArgumentException("no such view " + name);
+        }
+        this.definition = XStreamDOM.from(Jenkins.XSTREAM2, v);
     }
 
     public void setName(String name) {
@@ -51,7 +59,9 @@ public class ViewIngredient extends Ingredient {
         return new ViewIngredient(v.getViewName(),dom);
     }
 
+    /* TODO does not work: views are kept in main config.xml, so exported form includes <owner> (and <name>):
     @Extension
+    */
     public static class DescriptorImpl extends IngredientDescriptor {
         @Override
         public String getDisplayName() {
