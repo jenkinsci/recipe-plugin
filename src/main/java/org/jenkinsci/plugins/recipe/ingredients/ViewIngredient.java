@@ -11,6 +11,8 @@ import org.jenkinsci.plugins.recipe.Recipe;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * View.
@@ -50,6 +52,7 @@ public class ViewIngredient extends Ingredient {
     @Override
     public void cook(Recipe recipe, ImportReportList reportList) throws IOException {
         XStreamDOM actual = recipe.createImportOptions().apply(definition);
+        actual.getChildren().add(new XStreamDOM("name", Collections.<String,String>emptyMap(),name));
 
         View v = (View)Jenkins.XSTREAM2.unmarshal(actual.newReader());
         Jenkins.getInstance().addView(v);
@@ -65,10 +68,11 @@ public class ViewIngredient extends Ingredient {
      */
     private static XStreamDOM parse(View v) {
         XStreamDOM dom = XStreamDOM.from(Jenkins.XSTREAM2,v);
-        for (XStreamDOM c : dom.getChildren()) {
-            if (c.getTagName().equals("owner")) {
-                dom.getChildren().remove(c);
-                break;
+        for (Iterator<XStreamDOM> itr = dom.getChildren().iterator(); itr.hasNext(); ) {
+            XStreamDOM c =  itr.next();
+            if (c.getTagName().equals("owner")
+            ||  c.getTagName().equals("name")) {
+                itr.remove();
             }
         }
         return dom;
