@@ -51,7 +51,7 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
     private List<Ingredient> ingredients = new ArrayList<Ingredient>();
 
     @DataBoundConstructor
-    public Recipe(String id, String version, String displayName, String description, List<Ingredient> ingredients) {
+    public Recipe(String id, String version, String displayName, String description, List<? extends Ingredient> ingredients) {
         setId(id);
         this.version = version;
         this.displayName = displayName;
