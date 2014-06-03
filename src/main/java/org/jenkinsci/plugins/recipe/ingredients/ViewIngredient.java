@@ -1,7 +1,7 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
+import hudson.Extension;
 import hudson.model.View;
-import java.io.IOException;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
 import org.jenkinsci.plugins.recipe.ImportReportList;
@@ -9,6 +9,8 @@ import org.jenkinsci.plugins.recipe.Ingredient;
 import org.jenkinsci.plugins.recipe.IngredientDescriptor;
 import org.jenkinsci.plugins.recipe.Recipe;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import java.io.IOException;
 
 /**
  * View.
@@ -30,7 +32,7 @@ public class ViewIngredient extends Ingredient {
         if (v == null) {
             throw new IllegalArgumentException("no such view " + name);
         }
-        this.definition = XStreamDOM.from(Jenkins.XSTREAM2, v);
+        this.definition = parse(v);
     }
 
     public void setName(String name) {
@@ -54,14 +56,25 @@ public class ViewIngredient extends Ingredient {
     }
 
     public static ViewIngredient fromView(View v) {
-        XStreamDOM dom = XStreamDOM.from(Jenkins.XSTREAM2,v);
-        // TODO: remove View.owner from DOM
+        XStreamDOM dom = parse(v);
         return new ViewIngredient(v.getViewName(),dom);
     }
 
-    /* TODO does not work: views are kept in main config.xml, so exported form includes <owner> (and <name>):
+    /**
+     * Builds DOM from a view and remove unwanted portions.
+     */
+    private static XStreamDOM parse(View v) {
+        XStreamDOM dom = XStreamDOM.from(Jenkins.XSTREAM2,v);
+        for (XStreamDOM c : dom.getChildren()) {
+            if (c.getTagName().equals("owner")) {
+                dom.getChildren().remove(c);
+                break;
+            }
+        }
+        return dom;
+    }
+
     @Extension
-    */
     public static class DescriptorImpl extends IngredientDescriptor {
         @Override
         public String getDisplayName() {
