@@ -126,7 +126,7 @@ public class Recipe extends AbstractDescribableImpl<Recipe> implements HttpRespo
      */
     public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException, ServletException {
         rsp.setContentType("application/xml;charset=UTF-8");
-        Recipe.XSTREAM.toXML(this,rsp.getOutputStream());
+        Recipe.XSTREAM.toXMLUTF8(this,rsp.getOutputStream());
     }
 
     public void apply(StaplerRequest req) throws ServletException {
