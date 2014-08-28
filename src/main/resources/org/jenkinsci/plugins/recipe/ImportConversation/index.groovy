@@ -62,5 +62,10 @@ l.layout {
                 }
             }
         }
+
+        if (my.error != null) {
+            pre h.printThrowable(my.error)
+        }
+
     }
 }
