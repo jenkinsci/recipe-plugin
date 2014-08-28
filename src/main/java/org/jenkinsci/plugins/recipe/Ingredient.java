@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.recipe;
 
+import com.google.common.base.Charsets;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 import hudson.ExtensionPoint;
 import hudson.model.AbstractDescribableImpl;
@@ -12,6 +13,8 @@ import org.kohsuke.stapler.StaplerRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 /**
  * An unit of a configured item in Jenkins that gets transported to another Jenkins instance.
@@ -54,10 +57,20 @@ public abstract class Ingredient extends AbstractDescribableImpl<Ingredient> imp
      */
     protected abstract void cook(Recipe recipe, ImportReportList reportList) throws IOException, InterruptedException;
 
-    protected static InputStream read(XStreamDOM dom) {
+    /**
+     * Allows a DOM tree to be read as an XML bytestream.
+     * Explicitly specifies UTF-8 encoding.
+     */
+    protected static InputStream read(XStreamDOM dom) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos.write("<?xml version='1.0' encoding='UTF-8'?>\n".getBytes());
         XStreamDOM.ConverterImpl c = new ConverterImpl();
-        c.marshal(dom, new XppDriver().createWriter(baos), null);
+        Writer w = new OutputStreamWriter(baos, Charsets.UTF_8);
+        try {
+            c.marshal(dom, new XppDriver().createWriter(w), null);
+        } finally {
+            w.close();
+        }
         return new ByteArrayInputStream(baos.toByteArray());
     }
 }
