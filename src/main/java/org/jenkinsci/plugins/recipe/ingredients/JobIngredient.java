@@ -1,6 +1,5 @@
 package org.jenkinsci.plugins.recipe.ingredients;
 
-import com.thoughtworks.xstream.io.xml.XppDriver;
 import hudson.Extension;
 import hudson.model.AbstractItem;
 import hudson.model.AbstractProject;
@@ -10,8 +9,6 @@ import hudson.model.TopLevelItem;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import jenkins.util.xstream.XStreamDOM;
-import jenkins.util.xstream.XStreamDOM.ConverterImpl;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jenkinsci.plugins.recipe.ImportReport;
 import org.jenkinsci.plugins.recipe.ImportReportList;
 import org.jenkinsci.plugins.recipe.Ingredient;
@@ -22,7 +19,6 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.transform.Source;
@@ -87,14 +83,9 @@ public class JobIngredient extends Ingredient {
     public void cook(Recipe recipe, ImportReportList reportList) throws IOException {
         // expansion of this is deferred
         XStreamDOM actual = recipe.createImportOptions().apply(definition);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XStreamDOM.ConverterImpl c = new ConverterImpl();
-        c.marshal(actual, new XppDriver().createWriter(baos), null);
-
         ModifiableTopLevelItemGroup g = Jenkins.getInstance();
         TopLevelItem j = g.getItem(name);
-        InputStream is = new ByteArrayInputStream(baos.toByteArray());
+        InputStream is = read(actual);
         if (j == null) {
             j = g.createProjectFromXML(name, is);
         } else if (j instanceof AbstractItem) {
